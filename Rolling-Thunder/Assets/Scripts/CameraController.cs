@@ -16,7 +16,7 @@ public class CameraController : MonoBehaviour
     private void LateUpdate()
     {
         Vector3 targetPosition = target.position + offset;
-        targetPosition.y = transform.position.y; // Lock the camera's Y position to prevent bobbing.
+        //targetPosition.y = transform.position.y; // Lock the camera's Y position to prevent bobbing.
         transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref currentVelocity, smoothTime);
     }
 

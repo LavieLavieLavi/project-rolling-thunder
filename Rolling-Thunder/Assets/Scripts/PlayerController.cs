@@ -12,11 +12,15 @@ public class PlayerController : MonoBehaviour
 
 
     [SerializeField] Transform groundCheck;
+    [SerializeField] float groundDistance = 0.2f;
     [SerializeField] LayerMask ground;
+
+    private Transform followTarget;
  
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        followTarget = new GameObject("PlayerFollowTarget").transform;
     }
 
     // Start is called before the first frame update
@@ -63,8 +67,12 @@ public class PlayerController : MonoBehaviour
 
     bool isGrounded()
     {
-        return Physics.CheckSphere(groundCheck.position, .1f, ground);
+        return Physics.CheckSphere(groundCheck.position, groundDistance, ground, QueryTriggerInteraction.Ignore);
         
     }
+
+
+
+
 
 }
