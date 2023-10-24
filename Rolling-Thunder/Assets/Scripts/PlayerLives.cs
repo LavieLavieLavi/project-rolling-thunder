@@ -7,41 +7,64 @@ using UnityEngine.SceneManagement;
 public class PlayerLives : MonoBehaviour
 {
     public int maxLives = 3;
+
     public int currentLives;
 
     bool dead = false;
-
+   
     public Transform respawnPoint;
 
+    [SerializeField]private float fallHeight = 5f;
 
+
+    private float initialY;
 
 
     // Start is called before the first frame update
     void Start()
     {
         currentLives = maxLives;
+        initialY = transform.position.y;
     }
 
     private void Update()
     {
+        float verticalDistance = initialY - transform.position.y;
+
         dead = false;
-        if (transform.position.y < -1f  && !dead) 
+        if (verticalDistance >= fallHeight && !dead)
         {
-            TakeLives(1);
+           // Debug.Log("Dead - Fell from a great height!");
+            TakeLives(1); // Instantly die
         }
+
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        ProcessingCollisions(other.gameObject);
+    }
+
+
+
+
+
+   
     //taking damage
-    void TakeLives(int live)
+   public void TakeLives(int live)
     {
         currentLives -= live;
-        transform.position = respawnPoint.position;
         dead = true;
-        Debug.Log("ded");
+        Debug.Log("Took a live");
+
         //Game over
         if (currentLives <= 0)
         {
             GameOver();
+        }
+        else
+        {
+            Respawn();
         }
     }
 
@@ -49,10 +72,23 @@ public class PlayerLives : MonoBehaviour
     void GameOver()
     {
         //Implement game over screen here
-        Debug.Log("games over");
-        Application.Quit();
+        Debug.Log("Game over");
+      
     }
 
-   
+    void Respawn()
+    {
+        Debug.Log("Respawned");
+        transform.position = respawnPoint.position;
+        initialY = transform.position.y;
+    }
 
+    void ProcessingCollisions(GameObject collider)
+    {
+        if (collider.CompareTag("Damage"))
+        {
+            TakeLives(1);
+        }
+    }
+   
 }
