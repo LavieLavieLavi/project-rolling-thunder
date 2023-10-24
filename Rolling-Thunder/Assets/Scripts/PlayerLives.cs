@@ -45,13 +45,16 @@ public class PlayerLives : MonoBehaviour
         ProcessingCollisions(other.gameObject);
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        ProcessingCollisions(collision.gameObject); 
+    }
 
 
 
 
-   
     //taking damage
-   public void TakeLives(int live)
+    public void TakeLives(int live)
     {
         currentLives -= live;
         dead = true;
