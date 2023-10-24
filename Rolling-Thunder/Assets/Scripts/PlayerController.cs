@@ -12,27 +12,26 @@ public class PlayerController : MonoBehaviour
 
 
     [SerializeField] Transform groundCheck;
-    [SerializeField] float groundDistance = 0.2f;
+    [SerializeField] float groundDistance = 0.5f;
     [SerializeField] LayerMask ground;
+    [SerializeField] LayerMask Furniture;
+
 
     private Transform followTarget;
- 
+
+    
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         followTarget = new GameObject("PlayerFollowTarget").transform;
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+
 
     // Good for handling inputs and animations
     void Update()
     {
-        
         processInputs();
     }
 
@@ -46,10 +45,17 @@ public class PlayerController : MonoBehaviour
         xinput = Input.GetAxis("Horizontal");
         zinput = Input.GetAxis("Vertical");
 
-        if (Input.GetButtonDown("Jump") && isGrounded())
+        if (Input.GetButtonDown("Jump") && isGrounded() )
         {
+           
             Jump();
    
+        }
+
+        if (Input.GetButtonDown("Jump") && isFurniture())
+        {
+            Jump();
+
         }
     }
 
@@ -63,12 +69,20 @@ public class PlayerController : MonoBehaviour
     {
         rb.velocity = new Vector3 (rb.velocity.x, jumpForce, rb.velocity.z);
 
+
+
     }
 
     bool isGrounded()
     {
         return Physics.CheckSphere(groundCheck.position, groundDistance, ground, QueryTriggerInteraction.Ignore);
         
+    }
+
+    bool isFurniture()
+    {
+        return Physics.CheckSphere(groundCheck.position, groundDistance, Furniture, QueryTriggerInteraction.Ignore);
+
     }
 
 
