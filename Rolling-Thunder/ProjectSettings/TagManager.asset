@@ -7,6 +7,7 @@ TagManager:
   - Floor
   - Keys
   - Damage
+  - New tag
   layers:
   - Default
   - TransparentFX
@@ -16,8 +17,8 @@ TagManager:
   - UI
   - Ground
   - Furnitures
-  - 
-  - 
+  - Player
+  - Obstacle
   - 
   - 
   - 

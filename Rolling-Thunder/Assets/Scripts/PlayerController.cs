@@ -18,7 +18,6 @@ public class PlayerController : MonoBehaviour
 
 
 
-
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -31,6 +30,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         processInputs();
+        
     }
 
     private void FixedUpdate() // for movement
@@ -38,18 +38,15 @@ public class PlayerController : MonoBehaviour
         Move();
         
     }
-    private void LateUpdate()
-    {
-        
-    }
+
 
     private void processInputs()
     {
 
-        if (Input.GetButtonDown("Jump") && isGrounded())
+        if (Input.GetButtonDown("Jump") && isGrounded() )
         {
 
-            Debug.Log("space");
+            Debug.Log("space ground");
            
             Jump();
    
@@ -57,7 +54,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Jump") && isFurniture())
         {
-            Debug.Log("space");
+            Debug.Log("space furnit");
             Jump();
 
         }
@@ -142,7 +139,6 @@ public class PlayerController : MonoBehaviour
         */
         //rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         #endregion
-
         rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
 
     }
