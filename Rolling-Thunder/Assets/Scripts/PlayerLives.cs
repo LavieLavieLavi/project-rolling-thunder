@@ -16,11 +16,19 @@ public class PlayerLives : MonoBehaviour
 
     [SerializeField]private float fallHeight = 5f;
 
+    public Rigidbody rb;
+
 
     private float initialY;
 
 
     // Start is called before the first frame update
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+        Respawn();
+    }
     void Start()
     {
         currentLives = maxLives;
@@ -34,7 +42,7 @@ public class PlayerLives : MonoBehaviour
         dead = false;
         if (verticalDistance >= fallHeight && !dead)
         {
-           // Debug.Log("Dead - Fell from a great height!");
+            Debug.Log("Dead - Fell from a great height!");
             TakeLives(1); // Instantly die
         }
 
@@ -81,6 +89,8 @@ public class PlayerLives : MonoBehaviour
 
     void Respawn()
     {
+
+
         Debug.Log("Respawned");
         transform.position = respawnPoint.position;
         initialY = transform.position.y;
