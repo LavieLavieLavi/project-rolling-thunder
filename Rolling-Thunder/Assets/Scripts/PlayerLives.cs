@@ -16,7 +16,7 @@ public class PlayerLives : MonoBehaviour
 
     [SerializeField]private float fallHeight = 5f;
 
-    public Rigidbody rb;
+   
 
 
     private float initialY;
@@ -26,7 +26,7 @@ public class PlayerLives : MonoBehaviour
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        
         Respawn();
     }
     void Start()

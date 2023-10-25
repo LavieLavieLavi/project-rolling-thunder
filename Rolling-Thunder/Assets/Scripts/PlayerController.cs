@@ -7,9 +7,6 @@ public class PlayerController : MonoBehaviour
     public Rigidbody rb;
     [SerializeField] private float moveSpeed = 2f;
     [SerializeField]private float jumpForce = 10f;
-    private float xrotation;
-    private float yrotation;
-
 
     [SerializeField] Transform groundCheck;
     [SerializeField] float groundDistance = 0.5f;
@@ -17,21 +14,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] LayerMask Furniture;
 
 
-    private Transform followTarget;
-    [SerializeField] Transform cameraFollowTarget;
+    public Camera cam;
 
 
-    public PlayerInputManager input;
-    private CharacterController controller;
-    [SerializeField] GameObject mainCam;
+
 
     private void Awake()
     {
-
         rb = GetComponent<Rigidbody>();
-        input = GetComponent<PlayerInputManager>();
-        controller = GetComponent<CharacterController>();
-        followTarget = new GameObject("PlayerFollowTarget").transform;
+    
     }
 
 
@@ -49,7 +40,7 @@ public class PlayerController : MonoBehaviour
     }
     private void LateUpdate()
     {
-        CameraRotate();
+        
     }
 
     private void processInputs()
@@ -74,7 +65,16 @@ public class PlayerController : MonoBehaviour
 
     private void Move()
     {
-        if (Input.GetAxis("Horizontal") > 0)
+        Vector3 cameraForward = cam.transform.forward;
+        cameraForward.y = 0; // Keep the direction horizontal
+        cameraForward.Normalize();
+
+        Vector3 moveDirection = cameraForward * Input.GetAxis("Vertical") + cam.transform.right * Input.GetAxis("Horizontal");
+        moveDirection.Normalize();
+
+        rb.AddForce(moveDirection * moveSpeed  );
+
+        /*if (Input.GetAxis("Horizontal") > 0)
         {
             rb.AddForce(Vector3.right * moveSpeed);
         }
@@ -90,10 +90,10 @@ public class PlayerController : MonoBehaviour
         else if (Input.GetAxis("Vertical") < 0)
         {
             rb.AddForce(-Vector3.forward * moveSpeed);
-        }
+        }*/
 
 
-
+        #region commented out old scripts
         /*      float speed = 0;
 
               Vector3 inputDir = new Vector3(input.move.x, 0, input.move.y);
@@ -127,19 +127,23 @@ public class PlayerController : MonoBehaviour
               transform.rotation = Quaternion.Slerp(transform.rotation, targetRotate, 20 * Time.deltaTime)
           }*/
         //rb.AddForce(new Vector3(xinput, 0f , zinput) * moveSpeed);
+        #endregion
+
     }
 
     private void Jump()
     {
-   /*     Vector3 objectScale = transform.localScale;
-        float maxScale = Mathf.Max(objectScale.x, objectScale.y, objectScale.z);
+        #region old Scripts
+        /*     Vector3 objectScale = transform.localScale;
+             float maxScale = Mathf.Max(objectScale.x, objectScale.y, objectScale.z);
 
-        // Apply jump force taking into account the object's scale
-        rb.velocity = new Vector3(rb.velocity.x, jumpForce * maxScale, rb.velocity.z);
-*/
-        rb.velocity = new Vector3 (rb.velocity.x, jumpForce, rb.velocity.z);
+             // Apply jump force taking into account the object's scale
+             rb.velocity = new Vector3(rb.velocity.x, jumpForce * maxScale, rb.velocity.z);
+        */
         //rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        #endregion
 
+        rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
 
     }
 
@@ -156,16 +160,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    void CameraRotate()
-    {
-        xrotation += input.look.y;
-        yrotation += input.look.x;
-        xrotation = Mathf.Clamp(xrotation, -30, 70);
-
-        Quaternion rotation = Quaternion.Euler(xrotation, yrotation, 0);
-
-        cameraFollowTarget.rotation = rotation;
-    }
+  
 
 
 }

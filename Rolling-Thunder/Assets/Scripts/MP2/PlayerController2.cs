@@ -16,15 +16,16 @@ public class PlayerController2 : MonoBehaviour
     float turnSmoothTime = 0.1f;
     float turnVel;
 
+
     [SerializeField]
     Transform CameraTransform;
     Vector3 PlayerVelocity;
     public Transform groundCheck;
     public float GroundDistance = 0.4f;
     public LayerMask GroundMask;
+    public LayerMask Furniture;
 
-    bool isGrounded;
-
+   
     private void Start()
     {
         Cursor.lockState = CursorLockMode.None;
@@ -34,8 +35,13 @@ public class PlayerController2 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        isGrounded = Physics.CheckSphere(groundCheck.position, GroundDistance, GroundMask);
-        if (isGrounded && PlayerVelocity.y < 0)
+       
+        if (isGrounded() && PlayerVelocity.y < 0)
+        {
+            PlayerVelocity.y = -2.5f;
+        }
+
+        if (isFurniture() && PlayerVelocity.y < 0)
         {
             PlayerVelocity.y = -2.5f;
         }
@@ -45,7 +51,7 @@ public class PlayerController2 : MonoBehaviour
 
 
         Vector3 direction = new Vector3(_horizontal, 0, _vertical).normalized;
-        //Vector3 direction = wasd.ReadValue<Vector3>();
+        
 
         if (direction.magnitude >= 0.1f)
         {
@@ -57,14 +63,31 @@ public class PlayerController2 : MonoBehaviour
 
             _controller.Move(moveDirection.normalized * playerSpeed * Time.deltaTime);
         }
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        if (Input.GetButtonDown("Jump") && isGrounded())
         {
-
+            Debug.Log("pressed");
+            PlayerVelocity.y = Mathf.Sqrt(jumpPower * -2f * gravity);
+        }
+        if (Input.GetButtonDown("Jump") && isFurniture())
+        {
+            Debug.Log("pressed");
             PlayerVelocity.y = Mathf.Sqrt(jumpPower * -2f * gravity);
         }
 
         PlayerVelocity.y += gravity * Time.deltaTime;
         _controller.Move(PlayerVelocity * Time.deltaTime);
+
+    }
+
+    bool isGrounded()
+    {
+        return Physics.CheckSphere(groundCheck.position, GroundDistance, GroundMask, QueryTriggerInteraction.Ignore);
+
+    }
+
+    bool isFurniture()
+    {
+        return Physics.CheckSphere(groundCheck.position, GroundMask, Furniture, QueryTriggerInteraction.Ignore);
 
     }
 
