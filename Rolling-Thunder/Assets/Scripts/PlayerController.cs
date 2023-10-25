@@ -57,6 +57,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Jump") && isGrounded())
         {
+
             Debug.Log("space");
            
             Jump();
