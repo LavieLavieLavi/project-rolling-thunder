@@ -32,6 +32,8 @@ public class AIController : MonoBehaviour
     bool m_IsPatrol;                                //  If the enemy is patrol, state of patroling
     bool m_CaughtPlayer;                            //  if the enemy has caught the player
 
+
+    public AudioSource meoewSFX;
     void Start()
     {
         m_PlayerPosition = Vector3.zero;
@@ -111,6 +113,7 @@ public class AIController : MonoBehaviour
             {
                 //  The enemy wait for a moment and then go to the last player position
                 Stop();
+                meoewSFX.Play();
                 m_TimeToRotate -= Time.deltaTime;
             }
         }
@@ -150,6 +153,7 @@ public class AIController : MonoBehaviour
 
     void Stop()
     {
+        meoewSFX.Play();
         navMeshAgent.isStopped = true;
         navMeshAgent.speed = 0;
     }

@@ -10,12 +10,17 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] Transform groundCheck;
     [SerializeField] float groundDistance = 0.5f;
+    [SerializeField] float furnitureDistance = 0.5f;
     [SerializeField] LayerMask ground;
     [SerializeField] LayerMask Furniture;
 
 
     public Camera cam;
 
+    public GameObject hiddenObject; // Reference to the hidden game object
+
+    public AudioSource rollSFX;
+    public AudioSource jumpSFX;
 
 
     private void Awake()
@@ -31,6 +36,12 @@ public class PlayerController : MonoBehaviour
     {
         processInputs();
         
+
+        // Check for ESC key press
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ShowHiddenObject();
+        }
     }
 
     private void FixedUpdate() // for movement
@@ -46,7 +57,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("Jump") && isGrounded() )
         {
 
-            Debug.Log("space ground");
+           
            
             Jump();
    
@@ -54,7 +65,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Jump") && isFurniture())
         {
-            Debug.Log("space furnit");
+           
             Jump();
 
         }
@@ -62,13 +73,17 @@ public class PlayerController : MonoBehaviour
 
     private void Move()
     {
+        
         Vector3 cameraForward = cam.transform.forward;
         cameraForward.y = 0; // Keep the direction horizontal
         cameraForward.Normalize();
-
+        
         Vector3 moveDirection = cameraForward * Input.GetAxis("Vertical") + cam.transform.right * Input.GetAxis("Horizontal");
         moveDirection.Normalize();
-
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D))
+        {
+            rollSFX.Play();
+        }
         rb.AddForce(moveDirection * moveSpeed  );
 
         /*if (Input.GetAxis("Horizontal") > 0)
@@ -139,6 +154,7 @@ public class PlayerController : MonoBehaviour
         */
         //rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         #endregion
+        jumpSFX.Play();
         rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
 
     }
@@ -151,12 +167,29 @@ public class PlayerController : MonoBehaviour
 
     bool isFurniture()
     {
-        return Physics.CheckSphere(groundCheck.position, groundDistance, Furniture, QueryTriggerInteraction.Ignore);
+        return Physics.CheckSphere(groundCheck.position, furnitureDistance, Furniture, QueryTriggerInteraction.Ignore);
 
     }
 
-
-  
-
+    private void ShowHiddenObject()
+    {
+        // Check if the hidden object is not null
+        if (hiddenObject != null)
+        {
+            // Toggle the visibility based on the current state
+            if (hiddenObject.activeSelf)
+            {
+                // If the object is currently active, hide it and set time scale to 1
+                hiddenObject.SetActive(false);
+                Time.timeScale = 1;
+            }
+            else
+            {
+                // If the object is currently inactive, show it and set time scale to 0
+                hiddenObject.SetActive(true);
+                Time.timeScale = 0;
+            }
+        }
+    }
 
 }

@@ -8,20 +8,26 @@ public class ScoreManager : MonoBehaviour
     public static int scoreValue = 0;
     Text score;
 
-    // Define the score threshold for showing the next level canvas
-    public int showCanvasThreshold = 100;
+    // Define the score thresholds for showing the next level canvas
+    public List<int> showCanvasThresholds = new List<int> { 100, 200, 300 };
 
     // Reference to the canvas you want to show
-    public GameObject nextLevelCanvas;
+    public List<GameObject> nextLevelCanvases = new List<GameObject>();
+
+    private int currentLevel = 0;
 
     private void Start()
     {
         score = GetComponent<Text>();
-        // Ensure the canvas is initially hidden
-        nextLevelCanvas.SetActive(false);
+        // Ensure all canvases are initially hidden
+        foreach (var canvas in nextLevelCanvases)
+        {
+            canvas.SetActive(false);
+        }
+
         Time.timeScale = 1;
 
-        if (scoreValue >= 160)
+        if (scoreValue >= 13)
         {
             scoreValue = 0;
         }
@@ -29,22 +35,24 @@ public class ScoreManager : MonoBehaviour
 
     private void Update()
     {
-        score.text = "Score: " + scoreValue.ToString();
+        score.text = scoreValue.ToString() + "/13";
 
         // Check if the score has reached the threshold to show the canvas
-        if (scoreValue >= showCanvasThreshold)
+        if (scoreValue >= showCanvasThresholds[currentLevel])
         {
-            // Show the canvas
-            nextLevelCanvas.SetActive(true);
-            Time.timeScale = 0;
+            // Show the canvas for the current level
+            nextLevelCanvases[currentLevel].SetActive(true);
+
+            Time.timeScale = 1;
+
+            // Move to the next level
+            currentLevel++;
+
+            // Check if there are no more levels, reset the current level
+            if (currentLevel >= nextLevelCanvases.Count)
+            {
+                currentLevel = 0;
+            }
         }
     }
-
-    // This method is called when the button in the canvas is pressed
-    /*public void LoadNextLevel()
-    {
-        // Here you can place the code to load the next level
-        // For example, you can load the next scene:
-        UnityEngine.SceneManagement.SceneManager.LoadScene("MP3_Level2");
-    }*/
 }

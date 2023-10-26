@@ -4,10 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Floor
-  - Keys
   - Damage
-  - New tag
+  - Keys
+  - DAmage
+  - Floor
   layers:
   - Default
   - TransparentFX
